@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Shamanic Forest & Earth
  * Description: Reversible Forest & Earth design system and homepage for Shamanic Reiki Healing Ireland. Designed for the NativeChurch theme. 3.3: top bar, service strip, dated events, review slider, inline newsletter; 3.3.1: consistent styling on every page, booking banner, shamanic artwork.
- * Version: 3.4.6
+ * Version: 3.4.7
  * Author: SmartSite
  * License: GPL-2.0-or-later
  * Text Domain: shamanic-forest-earth
@@ -10,7 +10,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) { exit; }
 
-define( 'SFE33_VERSION', '3.4.6' );
+define( 'SFE33_VERSION', '3.4.7' );
 define( 'SFE33_FORM_VER', 2 );
 /* Artwork generated for the site and stored in its Media Library (IDs). */
 define( 'SFE33_IMG_HERO', 20986 );
@@ -41,6 +41,7 @@ function sfe33_defaults() {
         'sfe33_hide_likes'       => 1,
         'sfe33_drop_theme_fonts' => 1,
         'sfe33_mailpoet_list'    => '',
+        'sfe34_events_auto'      => 1,
     );
 }
 
@@ -452,6 +453,7 @@ add_action( 'admin_init', function() {
     register_setting( 'sfe_settings', 'sfe33_footer_enabled', $bool );
     register_setting( 'sfe_settings', 'sfe33_hide_likes', $bool );
     register_setting( 'sfe_settings', 'sfe33_drop_theme_fonts', $bool );
+    register_setting( 'sfe_settings', 'sfe34_events_auto', $bool );
     register_setting( 'sfe_settings', 'sfe32_newsletter_url', $url );
     register_setting( 'sfe_settings', 'sfe33_phone', $text );
     register_setting( 'sfe_settings', 'sfe33_email', array( 'type' => 'string', 'sanitize_callback' => 'sanitize_email' ) );
@@ -490,6 +492,7 @@ function sfe33_settings_page() {
         <?php $check( 'sfe33_footer_enabled', 'Use the Forest & Earth footer (untick to restore the theme footer and its widgets)' ); ?>
         <?php $check( 'sfe33_hide_likes', 'Hide the Jetpack “Like this” buttons' ); ?>
         <?php $check( 'sfe33_drop_theme_fonts', 'Speed: do not load the theme’s old Google Fonts (Roboto, Volkhov, Anaheim…) – Forest & Earth uses its own' ); ?>
+        <?php $check( 'sfe34_events_auto', 'Events page: show the Forest & Earth events list automatically (replaces the theme’s old calendar list)' ); ?>
         <?php $check( 'sfe33_cta_enabled', 'Show the “Book a Healing Session” banner at the end of pages and posts' ); ?>
 
         <h2>Contact &amp; social</h2>
@@ -1059,3 +1062,30 @@ add_shortcode( 'sfe_events', function() {
     <?php
     return ob_get_clean();
 } );
+
+/* ---------- Automatic events page (3.4.7) ---------- */
+function sfe34_is_events_page() {
+    if ( is_admin() || ! is_page() || ! sfe33_opt( 'sfe32_enabled' ) || ! sfe33_opt( 'sfe34_events_auto' ) ) { return false; }
+    $id = get_queried_object_id();
+    if ( ! $id ) { return false; }
+    $tpl = (string) get_page_template_slug( $id );
+    if ( 0 === strpos( basename( $tpl ), 'template-event' ) ) { return true; }
+    $post = get_post( $id );
+    return $post && 'events' === $post->post_name;
+}
+
+/* Use the theme's full-width page layout instead of its old event-calendar template. */
+add_filter( 'template_include', function( $template ) {
+    if ( ! sfe34_is_events_page() ) { return $template; }
+    if ( 0 !== strpos( basename( $template ), 'template-event' ) ) { return $template; }
+    $full = locate_template( array( 'template-fullwidth.php', 'page.php' ) );
+    return $full ? $full : $template;
+}, 98 );
+
+/* Put the events list into the page content unless the editor already placed it. */
+add_filter( 'the_content', function( $content ) {
+    if ( ! sfe34_is_events_page() || ! in_the_loop() || ! is_main_query() ) { return $content; }
+    if ( get_the_ID() !== get_queried_object_id() ) { return $content; }
+    if ( false !== strpos( $content, 'sfe-events-page' ) || has_shortcode( get_post_field( 'post_content', get_the_ID() ), 'sfe_events' ) ) { return $content; }
+    return $content . do_shortcode( '[sfe_events]' );
+}, 20 );

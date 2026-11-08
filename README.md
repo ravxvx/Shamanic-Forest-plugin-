@@ -2,7 +2,7 @@
 
 A WordPress plugin that gives the **NativeChurch** theme a "Forest & Earth" look: deep forest green, gold and cream, with a shamanic feel. It is built for [shamanic-reiki-healing.com](https://www.shamanic-reiki-healing.com/).
 
-**Current version:** 3.4.6 · Requires WordPress 6.0+ and PHP 7.4+ · MIT (see [LICENSE](LICENSE))
+**Current version:** 3.4.7 · Requires WordPress 6.0+ and PHP 7.4+ · MIT (see [LICENSE](LICENSE))
 
 ![Homepage hero and top bar](screenshots/hero-topbar.png)
 
@@ -22,7 +22,7 @@ These screenshots are taken from the live site, so they update automatically:
 - **One consistent style on every page:** headings, breadcrumbs, sidebars and buttons.
 - **Booking form** `[sfe_booking_form]`, built with Contact Form 7. It uses the full width, with two fields per row.
 - **Newsletter signup** `[sfe_newsletter_form]`. It adds subscribers straight to a MailPoet list, uses a nonce and a spam honeypot, and sends MailPoet's confirmation email.
-- **Events list** `[sfe_events]`. Upcoming events are cards grouped by month; past events sit in a collapsible list.
+- **Events list** `[sfe_events]`, shown automatically on the Events page. Upcoming events are cards grouped by month; past events sit in a collapsible list.
 - **Event pages:** styled "Event details" panel and share icons.
 - **Mobile menu:** tap to open a submenu, marked with a gold chevron.
 - **Speed:** critical CSS, SVG icons with fixed sizes (no icon flash while the page loads) and none of the theme's old Google Fonts.
@@ -44,7 +44,7 @@ These screenshots are taken from the live site, so they update automatically:
 
 ## Installation
 
-1. Download `releases/shamanic-forest-earth-3.4.6.zip`.
+1. Download `releases/shamanic-forest-earth-3.4.7.zip`.
 2. In WordPress, go to **Plugins → Add New → Upload Plugin**, choose the ZIP and click **Install Now**. If an older version is installed, choose **Replace current with uploaded**.
 3. Activate the plugin. You can then change its options under **Settings → Forest & Earth**.
 

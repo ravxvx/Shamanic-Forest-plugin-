@@ -2,10 +2,13 @@
 Contributors: smartsite
 Requires at least: 6.0
 Requires PHP: 7.4
-Stable tag: 3.4.6
+Stable tag: 3.4.7
 License: GPLv2 or later
 
 Forest & Earth homepage and visual design for the NativeChurch theme.
+
+== 3.4.7 ==
+* The Events page shows the Forest & Earth events list automatically: no shortcode or template change needed. The theme's old calendar template is swapped for the full-width layout. Switch in settings: "Events page: show the Forest & Earth events list automatically".
 
 == 3.4.6 ==
 * Events page: [sfe_events] – upcoming events as cards grouped by month (date tile, image, time, place, excerpt, Details + Book buttons); past events in a collapsible list.
