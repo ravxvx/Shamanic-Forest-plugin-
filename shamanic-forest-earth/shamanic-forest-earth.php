@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Shamanic Forest & Earth
  * Description: Reversible Forest & Earth design system and homepage for Shamanic Reiki Healing Ireland. Designed for the NativeChurch theme. 3.3: top bar, service strip, dated events, review slider, inline newsletter; 3.3.1: consistent styling on every page, booking banner, shamanic artwork.
- * Version: 3.4.9
+ * Version: 3.4.10
  * Author: SmartSite
  * License: GPL-2.0-or-later
  * Text Domain: shamanic-forest-earth
@@ -10,7 +10,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) { exit; }
 
-define( 'SFE33_VERSION', '3.4.9' );
+define( 'SFE33_VERSION', '3.4.10' );
 define( 'SFE33_FORM_VER', 3 );
 /* Artwork generated for the site and stored in its Media Library (IDs). */
 define( 'SFE33_IMG_HERO', 20986 );
@@ -43,6 +43,7 @@ function sfe33_defaults() {
         'sfe33_mailpoet_list'    => '',
         'sfe34_events_auto'      => 1,
         'sfe34_event_book'       => 1,
+        'sfe34_og_fallback'      => 1,
     );
 }
 
@@ -456,6 +457,7 @@ add_action( 'admin_init', function() {
     register_setting( 'sfe_settings', 'sfe33_drop_theme_fonts', $bool );
     register_setting( 'sfe_settings', 'sfe34_events_auto', $bool );
     register_setting( 'sfe_settings', 'sfe34_event_book', $bool );
+    register_setting( 'sfe_settings', 'sfe34_og_fallback', $bool );
     register_setting( 'sfe_settings', 'sfe32_newsletter_url', $url );
     register_setting( 'sfe_settings', 'sfe33_phone', $text );
     register_setting( 'sfe_settings', 'sfe33_email', array( 'type' => 'string', 'sanitize_callback' => 'sanitize_email' ) );
@@ -496,6 +498,7 @@ function sfe33_settings_page() {
         <?php $check( 'sfe33_drop_theme_fonts', 'Speed: do not load the theme’s old Google Fonts (Roboto, Volkhov, Anaheim…) – Forest & Earth uses its own' ); ?>
         <?php $check( 'sfe34_events_auto', 'Events page: show the Forest & Earth events list automatically (replaces the theme’s old calendar list)' ); ?>
         <?php $check( 'sfe34_event_book', 'Event pages: show the “Book your place” box (above and below the description)' ); ?>
+        <?php $check( 'sfe34_og_fallback', 'Social sharing: use Forest & Earth artwork as the Facebook / WhatsApp preview image when a page has no featured image' ); ?>
         <?php $check( 'sfe33_cta_enabled', 'Show the “Book a Healing Session” banner at the end of pages and posts' ); ?>
 
         <h2>Contact &amp; social</h2>
@@ -1136,3 +1139,28 @@ add_filter( 'the_content', function( $content ) {
     $e = sfe34_event_data( get_post( get_the_ID() ) );
     return sfe34_event_book_box( $e, 'top' ) . $content . sfe34_event_book_box( $e, 'end' );
 }, 21 );
+
+/* ---------- Social share image fallback (3.4.10) ----------
+ * Rank Math uses the featured image for Facebook / WhatsApp / X previews. Pages without one get
+ * matching Forest & Earth artwork instead of an empty preview. Pages with their own image are untouched. */
+function sfe34_og_image_id() {
+    $map = array(
+        'about-us' => 20987, 'shamanic-counselling-coaching' => 20987, 'contact' => 20987,
+        'events' => 20988, 'shamanic-drumming-meditation' => 20988, 'shamanic-journey' => 20988, 'becoming-a-shaman' => 20988, 'shamanism' => 20988,
+        'reiki' => 20989, 'shamanic-reiki-healing' => 20989, 'distance-healing-online' => 20989, 'courses' => 20989, 'tuning-forks-healing' => 20989,
+        'soul-retrieval' => 20990, 'geopathic-stress-house-clearing' => 20990, 'newsletter-signup' => 20990,
+        'medicine-buddha-dharma' => 21035, 'the-munay-ki-rites' => 21034, 'munay-ki-rites' => 21034,
+    );
+    if ( is_singular() ) {
+        $slug = (string) get_post_field( 'post_name', get_queried_object_id() );
+        if ( isset( $map[ $slug ] ) ) { return $map[ $slug ]; }
+        if ( is_singular( 'event' ) ) { return 20988; }
+    }
+    return SFE33_IMG_HERO;
+}
+add_action( 'rank_math/opengraph/facebook/add_additional_images', function( $image ) {
+    if ( ! sfe33_opt( 'sfe32_enabled' ) || ! sfe33_opt( 'sfe34_og_fallback' ) || ! is_object( $image ) ) { return; }
+    if ( method_exists( $image, 'has_images' ) && $image->has_images() ) { return; }
+    $id = (int) sfe34_og_image_id();
+    if ( $id && method_exists( $image, 'add_image_by_id' ) && wp_attachment_is_image( $id ) ) { $image->add_image_by_id( $id ); }
+} );

@@ -2,10 +2,13 @@
 Contributors: smartsite
 Requires at least: 6.0
 Requires PHP: 7.4
-Stable tag: 3.4.9
+Stable tag: 3.4.10
 License: GPLv2 or later
 
 Forest & Earth homepage and visual design for the NativeChurch theme.
+
+== 3.4.10 ==
+* Social sharing: pages and events without a featured image show matching Forest & Earth artwork in Facebook, WhatsApp and X link previews (Rank Math). Pages with their own image are unchanged. Switch in settings.
 
 == 3.4.9 ==
 * Contact page on phones: the booking card is one column again (intro on top, full-width form below). Before, the form was squeezed into a narrow strip.
