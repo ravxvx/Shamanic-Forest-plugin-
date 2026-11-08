@@ -2,7 +2,7 @@
 
 A WordPress plugin that gives the **NativeChurch** theme a "Forest & Earth" look: deep forest green, gold and cream, with a shamanic feel. It is built for [shamanic-reiki-healing.com](https://www.shamanic-reiki-healing.com/).
 
-**Current version:** 3.4.6 · Requires WordPress 6.0+ and PHP 7.4+ · GPLv2 or later
+**Current version:** 3.4.6 · Requires WordPress 6.0+ and PHP 7.4+ · MIT (see [LICENSE](LICENSE))
 
 ![Homepage hero and top bar](screenshots/hero-topbar.png)
 
