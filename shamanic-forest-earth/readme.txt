@@ -2,10 +2,15 @@
 Contributors: smartsite
 Requires at least: 6.0
 Requires PHP: 7.4
-Stable tag: 3.4.8
+Stable tag: 3.4.9
 License: GPLv2 or later
 
 Forest & Earth homepage and visual design for the NativeChurch theme.
+
+== 3.4.9 ==
+* Contact page on phones: the booking card is one column again (intro on top, full-width form below). Before, the form was squeezed into a narrow strip.
+* "Please fill out this field" messages only show after someone tries to send the form, not while the page loads.
+* Text fields use a 16px font on phones, so iPhones no longer zoom in when a field is tapped.
 
 == 3.4.8 ==
 * Event pages: "Book your place" box above and below the description, with date and time, Book a place and Call buttons. After the event it links to the upcoming events instead.

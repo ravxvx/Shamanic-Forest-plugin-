@@ -912,3 +912,22 @@ body.sfe-skin .sfe-evbook a.sfe-evbook__btn:hover{background:#d4b26c}
 body.sfe-skin .sfe-evbook a.sfe-evbook__btn--ghost{background:transparent;color:#173a2a!important;border-color:#173a2a}
 body.sfe-skin .sfe-evbook--end a.sfe-evbook__btn--ghost{color:#fffdf5!important;border-color:rgba(255,253,245,.6)}
 @media (max-width:600px){.sfe-evbook{padding:20px 18px}.sfe-evbook__actions,.sfe-evbook a.sfe-evbook__btn{width:100%;justify-content:center}body.sfe-skin .sfe-evbook h3{font-size:25px!important}}
+
+/* 3.4.9 – booking card on phones and tablets: one column (later desktop rules had kept two columns) */
+@media (max-width:900px){
+  body.sfe-skin .sfe-booking{grid-template-columns:minmax(0,1fr)!important}
+  body.sfe-skin .sfe-booking__direct{margin-top:0}
+}
+@media (max-width:560px){
+  body.sfe-skin .sfe-booking{border-radius:8px;margin-bottom:28px}
+  body.sfe-skin .sfe-booking__intro{padding:24px 20px;gap:14px}
+  body.sfe-skin .sfe-booking__intro h2{font-size:28px!important}
+  body.sfe-skin .sfe-booking__steps li{font-size:14px}
+  body.sfe-skin .sfe-form-grid{grid-template-columns:minmax(0,1fr)}
+  body.sfe-skin .sfe-booking__form{padding:22px 18px}
+  body.sfe-skin .sfe-booking input[type=text],body.sfe-skin .sfe-booking input[type=email],body.sfe-skin .sfe-booking input[type=tel],body.sfe-skin .sfe-booking select,body.sfe-skin .sfe-booking textarea{font-size:16px!important}
+  body.sfe-skin .sfe-booking .sfe-submit{width:100%;min-width:0}
+}
+/* Show "Please fill out this field" only after someone tries to send the form */
+.sfe-booking form.wpcf7-form:not(.invalid):not(.unaccepted):not(.failed) .wpcf7-not-valid-tip{display:none}
+body.sfe-skin .sfe-booking form.wpcf7-form:not(.invalid):not(.unaccepted):not(.failed) .wpcf7-not-valid{border-color:#d9d1c0!important}

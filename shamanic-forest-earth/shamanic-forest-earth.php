@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Shamanic Forest & Earth
  * Description: Reversible Forest & Earth design system and homepage for Shamanic Reiki Healing Ireland. Designed for the NativeChurch theme. 3.3: top bar, service strip, dated events, review slider, inline newsletter; 3.3.1: consistent styling on every page, booking banner, shamanic artwork.
- * Version: 3.4.8
+ * Version: 3.4.9
  * Author: SmartSite
  * License: GPL-2.0-or-later
  * Text Domain: shamanic-forest-earth
@@ -10,7 +10,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) { exit; }
 
-define( 'SFE33_VERSION', '3.4.8' );
+define( 'SFE33_VERSION', '3.4.9' );
 define( 'SFE33_FORM_VER', 3 );
 /* Artwork generated for the site and stored in its Media Library (IDs). */
 define( 'SFE33_IMG_HERO', 20986 );

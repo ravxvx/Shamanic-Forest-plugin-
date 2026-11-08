@@ -2,7 +2,7 @@
 
 A WordPress plugin that gives the **NativeChurch** theme a "Forest & Earth" look: deep forest green, gold and cream, with a shamanic feel. It is built for [shamanic-reiki-healing.com](https://www.shamanic-reiki-healing.com/).
 
-**Current version:** 3.4.8 · Requires WordPress 6.0+ and PHP 7.4+ · MIT (see [LICENSE](LICENSE))
+**Current version:** 3.4.9 · Requires WordPress 6.0+ and PHP 7.4+ · MIT (see [LICENSE](LICENSE))
 
 ![Homepage hero and top bar](screenshots/hero-topbar.png)
 
@@ -45,7 +45,7 @@ These screenshots are taken from the live site, so they update automatically:
 
 ## Installation
 
-1. Download `releases/shamanic-forest-earth-3.4.8.zip`.
+1. Download `releases/shamanic-forest-earth-3.4.9.zip`.
 2. In WordPress, go to **Plugins → Add New → Upload Plugin**, choose the ZIP and click **Install Now**. If an older version is installed, choose **Replace current with uploaded**.
 3. Activate the plugin. You can then change its options under **Settings → Forest & Earth**.
 
