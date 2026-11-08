@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Shamanic Forest & Earth
  * Description: Reversible Forest & Earth design system and homepage for Shamanic Reiki Healing Ireland. Designed for the NativeChurch theme. 3.3: top bar, service strip, dated events, review slider, inline newsletter; 3.3.1: consistent styling on every page, booking banner, shamanic artwork.
- * Version: 3.4.7
+ * Version: 3.4.8
  * Author: SmartSite
  * License: GPL-2.0-or-later
  * Text Domain: shamanic-forest-earth
@@ -10,8 +10,8 @@
 
 if ( ! defined( 'ABSPATH' ) ) { exit; }
 
-define( 'SFE33_VERSION', '3.4.7' );
-define( 'SFE33_FORM_VER', 2 );
+define( 'SFE33_VERSION', '3.4.8' );
+define( 'SFE33_FORM_VER', 3 );
 /* Artwork generated for the site and stored in its Media Library (IDs). */
 define( 'SFE33_IMG_HERO', 20986 );
 define( 'SFE33_IMG_ABOUT', 20987 );
@@ -42,6 +42,7 @@ function sfe33_defaults() {
         'sfe33_drop_theme_fonts' => 1,
         'sfe33_mailpoet_list'    => '',
         'sfe34_events_auto'      => 1,
+        'sfe34_event_book'       => 1,
     );
 }
 
@@ -454,6 +455,7 @@ add_action( 'admin_init', function() {
     register_setting( 'sfe_settings', 'sfe33_hide_likes', $bool );
     register_setting( 'sfe_settings', 'sfe33_drop_theme_fonts', $bool );
     register_setting( 'sfe_settings', 'sfe34_events_auto', $bool );
+    register_setting( 'sfe_settings', 'sfe34_event_book', $bool );
     register_setting( 'sfe_settings', 'sfe32_newsletter_url', $url );
     register_setting( 'sfe_settings', 'sfe33_phone', $text );
     register_setting( 'sfe_settings', 'sfe33_email', array( 'type' => 'string', 'sanitize_callback' => 'sanitize_email' ) );
@@ -493,6 +495,7 @@ function sfe33_settings_page() {
         <?php $check( 'sfe33_hide_likes', 'Hide the Jetpack “Like this” buttons' ); ?>
         <?php $check( 'sfe33_drop_theme_fonts', 'Speed: do not load the theme’s old Google Fonts (Roboto, Volkhov, Anaheim…) – Forest & Earth uses its own' ); ?>
         <?php $check( 'sfe34_events_auto', 'Events page: show the Forest & Earth events list automatically (replaces the theme’s old calendar list)' ); ?>
+        <?php $check( 'sfe34_event_book', 'Event pages: show the “Book your place” box (above and below the description)' ); ?>
         <?php $check( 'sfe33_cta_enabled', 'Show the “Book a Healing Session” banner at the end of pages and posts' ); ?>
 
         <h2>Contact &amp; social</h2>
@@ -647,11 +650,11 @@ function sfe33_booking_form_markup() {
         . '<label class="sfe-field"><span class="sfe-label">Your name <em>*</em></span>[text* your-name autocomplete:name placeholder "Full name"]</label>'
         . '<label class="sfe-field"><span class="sfe-label">Email <em>*</em></span>[email* your-email autocomplete:email placeholder "you@example.com"]</label>'
         . '<label class="sfe-field"><span class="sfe-label">Phone</span>[tel your-phone autocomplete:tel placeholder "+353 …"]</label>'
-        . '<label class="sfe-field"><span class="sfe-label">I am interested in</span>[select session-type include_blank ' . $opts . ']</label>'
+        . '<label class="sfe-field"><span class="sfe-label">I am interested in</span>[select session-type include_blank default:get ' . $opts . ']</label>'
         . '</div>'
         . '<div class="sfe-field sfe-field--full"><span class="sfe-label">Session format</span>[radio session-format use_label_element default:1 "In person" "Online / distance" "Not sure yet"]</div>'
         . '<label class="sfe-field sfe-field--full"><span class="sfe-label">Preferred days or times</span>[text preferred-time placeholder "e.g. weekday evenings or Saturday morning"]</label>'
-        . '<label class="sfe-field sfe-field--full"><span class="sfe-label">Your message <em>*</em></span>[textarea* your-message x5 placeholder "Tell me a little about what brings you here or what you would like to ask."]</label>'
+        . '<label class="sfe-field sfe-field--full"><span class="sfe-label">Your message <em>*</em></span>[textarea* your-message x5 default:get placeholder "Tell me a little about what brings you here or what you would like to ask."]</label>'
         . '<div class="sfe-consent">[acceptance consent] I agree that my details will be used to reply to this enquiry' . $privacy . '. [/acceptance]</div>'
         . '<div class="sfe-submit-row">[submit class:sfe-submit "Send Booking Request"]</div>';
 }
@@ -968,18 +971,27 @@ function sfe34_collect_events() {
     if ( ! post_type_exists( 'event' ) ) { return array(); }
     $q = new WP_Query( array( 'post_type' => 'event', 'post_status' => 'publish', 'posts_per_page' => 200, 'no_found_rows' => true, 'orderby' => 'date', 'order' => 'DESC' ) );
     $out = array();
-    foreach ( $q->posts as $p ) {
+    foreach ( $q->posts as $p ) { $out[] = sfe34_event_data( $p ); }
+    return $out;
+}
+
+function sfe34_event_data( $p ) {
         $date = sfe34_meta_first( $p->ID, array( 'imic_event_start_dt', 'event_start_date', '_EventStartDate', 'start_date' ) );
         $time = sfe34_meta_first( $p->ID, array( 'imic_event_start_tm', 'event_start_time', 'start_time' ) );
         $ts = $date ? strtotime( $date . ( $time && false === strpos( $date, ':' ) ? ' ' . $time : '' ) ) : false;
-        $out[] = array(
+        return array(
             'post'    => $p,
             'ts'      => $ts ? $ts : 0,
             'has_time'=> (bool) $time || ( $date && false !== strpos( $date, ':' ) ),
             'place'   => sfe34_meta_first( $p->ID, array( 'imic_event_address', 'imic_event_venue', 'event_address', '_event_address', 'event_location' ) ),
         );
-    }
-    return $out;
+}
+
+/* Booking link for one event: opens the booking form with "Event or Workshop" chosen and the message filled in (3.4.8). */
+function sfe34_event_book_url( $e ) {
+    $when = $e['ts'] ? ' on ' . date_i18n( 'l j F Y', $e['ts'] ) . ( $e['has_time'] ? ' at ' . date_i18n( get_option( 'time_format', 'g:i a' ), $e['ts'] ) : '' ) : '';
+    $msg  = sprintf( 'Hello, I would like to book a place at "%s"%s.', wp_strip_all_tags( get_the_title( $e['post'] ) ), $when );
+    return add_query_arg( array( 'session-type' => rawurlencode( 'Event or Workshop' ), 'your-message' => rawurlencode( $msg ) ), sfe33_book_url() ) . '#sfe-booking-title';
 }
 
 function sfe34_event_card( $e ) {
@@ -1006,7 +1018,7 @@ function sfe34_event_card( $e ) {
         <?php if ( $excerpt ) : ?><p class="sfe-ev__text"><?php echo esc_html( $excerpt ); ?></p><?php endif; ?>
         <div class="sfe-ev__actions">
           <a class="sfe-ev__btn" href="<?php echo esc_url( $link ); ?>"><?php esc_html_e( 'Details', 'shamanic-forest-earth' ); ?> <?php echo sfe33_icon( 'arrow' ); // phpcs:ignore ?></a>
-          <a class="sfe-ev__btn sfe-ev__btn--ghost" href="<?php echo esc_url( sfe33_book_url() ); ?>"><?php esc_html_e( 'Book a place', 'shamanic-forest-earth' ); ?></a>
+          <a class="sfe-ev__btn sfe-ev__btn--ghost" href="<?php echo esc_url( sfe34_event_book_url( $e ) ); ?>"><?php esc_html_e( 'Book a place', 'shamanic-forest-earth' ); ?></a>
         </div>
       </div>
     </article>
@@ -1089,3 +1101,38 @@ add_filter( 'the_content', function( $content ) {
     if ( false !== strpos( $content, 'sfe-events-page' ) || has_shortcode( get_post_field( 'post_content', get_the_ID() ), 'sfe_events' ) ) { return $content; }
     return $content . do_shortcode( '[sfe_events]' );
 }, 20 );
+
+/* ---------- "Book your place" on single event pages (3.4.8) ---------- */
+function sfe34_event_book_box( $e, $where ) {
+    $past = $e['ts'] && $e['ts'] < current_time( 'timestamp' ) - DAY_IN_SECONDS / 2;
+    ob_start(); ?>
+    <aside class="sfe-evbook sfe-evbook--<?php echo esc_attr( $where ); ?><?php echo $past ? ' is-past' : ''; ?>" aria-label="<?php esc_attr_e( 'Book a place', 'shamanic-forest-earth' ); ?>">
+      <div class="sfe-evbook__text">
+        <p class="sfe-evbook__eyebrow"><?php echo $past ? esc_html__( 'THIS EVENT HAS FINISHED', 'shamanic-forest-earth' ) : esc_html__( 'PLACES ARE LIMITED', 'shamanic-forest-earth' ); ?></p>
+        <h3><?php echo $past ? esc_html__( 'Would you like to join the next one?', 'shamanic-forest-earth' ) : esc_html__( 'Book your place', 'shamanic-forest-earth' ); ?></h3>
+        <?php if ( $e['ts'] && ! $past ) : ?>
+          <p class="sfe-evbook__when"><?php echo sfe33_icon( 'calendar' ); // phpcs:ignore ?><?php echo esc_html( date_i18n( 'l, j F Y', $e['ts'] ) . ( $e['has_time'] ? ' · ' . date_i18n( get_option( 'time_format', 'g:i a' ), $e['ts'] ) : '' ) ); ?></p>
+        <?php endif; ?>
+      </div>
+      <div class="sfe-evbook__actions">
+        <?php if ( $past ) : ?>
+          <a class="sfe-evbook__btn" href="<?php echo esc_url( sfe33_page_url( 'events', '/events/' ) ); ?>"><?php esc_html_e( 'See upcoming events', 'shamanic-forest-earth' ); ?> <?php echo sfe33_icon( 'arrow' ); // phpcs:ignore ?></a>
+        <?php else : ?>
+          <a class="sfe-evbook__btn" href="<?php echo esc_url( sfe34_event_book_url( $e ) ); ?>"><?php esc_html_e( 'Book a place', 'shamanic-forest-earth' ); ?> <?php echo sfe33_icon( 'arrow' ); // phpcs:ignore ?></a>
+          <?php $tel = preg_replace( '/[^0-9+]/', '', (string) sfe33_opt( 'sfe33_phone' ) ); if ( $tel ) : ?>
+            <a class="sfe-evbook__btn sfe-evbook__btn--ghost" href="tel:<?php echo esc_attr( $tel ); ?>"><?php echo sfe33_icon( 'phone' ); // phpcs:ignore ?> <?php esc_html_e( 'Call', 'shamanic-forest-earth' ); ?></a>
+          <?php endif; ?>
+        <?php endif; ?>
+      </div>
+    </aside>
+    <?php
+    return ob_get_clean();
+}
+
+add_filter( 'the_content', function( $content ) {
+    if ( is_admin() || is_feed() || ! is_singular( 'event' ) || ! in_the_loop() || ! is_main_query() ) { return $content; }
+    if ( ! sfe33_opt( 'sfe32_enabled' ) || ! sfe33_opt( 'sfe34_event_book' ) ) { return $content; }
+    if ( get_the_ID() !== get_queried_object_id() ) { return $content; }
+    $e = sfe34_event_data( get_post( get_the_ID() ) );
+    return sfe34_event_book_box( $e, 'top' ) . $content . sfe34_event_book_box( $e, 'end' );
+}, 21 );

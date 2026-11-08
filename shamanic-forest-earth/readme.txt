@@ -2,10 +2,15 @@
 Contributors: smartsite
 Requires at least: 6.0
 Requires PHP: 7.4
-Stable tag: 3.4.7
+Stable tag: 3.4.8
 License: GPLv2 or later
 
 Forest & Earth homepage and visual design for the NativeChurch theme.
+
+== 3.4.8 ==
+* Event pages: "Book your place" box above and below the description, with date and time, Book a place and Call buttons. After the event it links to the upcoming events instead.
+* "Book a place" (event pages and events list) opens the booking form with "Event or Workshop" chosen and the message filled in with the event name and date. The booking form updates itself once, on the next visit to the WordPress dashboard.
+* Switch in settings: "Event pages: show the Book your place box".
 
 == 3.4.7 ==
 * The Events page shows the Forest & Earth events list automatically: no shortcode or template change needed. The theme's old calendar template is swapped for the full-width layout. Switch in settings: "Events page: show the Forest & Earth events list automatically".
