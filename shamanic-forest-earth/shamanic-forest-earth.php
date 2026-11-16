@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Shamanic Forest & Earth
  * Description: Reversible Forest & Earth design system and homepage for Shamanic Reiki Healing Ireland. Designed for the NativeChurch theme. 3.3: top bar, service strip, dated events, review slider, inline newsletter; 3.3.1: consistent styling on every page, booking banner, shamanic artwork.
- * Version: 3.4.10
+ * Version: 3.4.11
  * Author: SmartSite
  * License: GPL-2.0-or-later
  * Text Domain: shamanic-forest-earth
@@ -10,7 +10,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) { exit; }
 
-define( 'SFE33_VERSION', '3.4.10' );
+define( 'SFE33_VERSION', '3.4.11' );
 define( 'SFE33_FORM_VER', 3 );
 /* Artwork generated for the site and stored in its Media Library (IDs). */
 define( 'SFE33_IMG_HERO', 20986 );
@@ -990,10 +990,15 @@ function sfe34_event_data( $p ) {
         );
 }
 
+/* Event title as plain text: WordPress returns titles with HTML entities (&#8211; for –, &#8217; for ’). */
+function sfe34_plain_title( $post ) {
+    return trim( html_entity_decode( wp_strip_all_tags( get_the_title( $post ) ), ENT_QUOTES | ENT_HTML5, 'UTF-8' ) );
+}
+
 /* Booking link for one event: opens the booking form with "Event or Workshop" chosen and the message filled in (3.4.8). */
 function sfe34_event_book_url( $e ) {
     $when = $e['ts'] ? ' on ' . date_i18n( 'l j F Y', $e['ts'] ) . ( $e['has_time'] ? ' at ' . date_i18n( get_option( 'time_format', 'g:i a' ), $e['ts'] ) : '' ) : '';
-    $msg  = sprintf( 'Hello, I would like to book a place at "%s"%s.', wp_strip_all_tags( get_the_title( $e['post'] ) ), $when );
+    $msg  = sprintf( 'Hello, I would like to book a place at "%s"%s.', sfe34_plain_title( $e['post'] ), $when );
     return add_query_arg( array( 'session-type' => rawurlencode( 'Event or Workshop' ), 'your-message' => rawurlencode( $msg ) ), sfe33_book_url() ) . '#sfe-booking-title';
 }
 
