@@ -931,3 +931,8 @@ body.sfe-skin .sfe-evbook--end a.sfe-evbook__btn--ghost{color:#fffdf5!important;
 /* Show "Please fill out this field" only after someone tries to send the form */
 .sfe-booking form.wpcf7-form:not(.invalid):not(.unaccepted):not(.failed) .wpcf7-not-valid-tip{display:none}
 body.sfe-skin .sfe-booking form.wpcf7-form:not(.invalid):not(.unaccepted):not(.failed) .wpcf7-not-valid{border-color:#d9d1c0!important}
+
+/* 3.4.12 – designer credit in the footer */
+body.sfe-skin .sfe-footer .sfe-footer__bottom p.sfe-footer__credit{color:#98a293}
+.sfe-footer__bottom .sfe-footer__credit a{color:#c6a15b!important;text-decoration:none}
+.sfe-footer__bottom .sfe-footer__credit a:hover{color:#dfc58f!important;text-decoration:underline}

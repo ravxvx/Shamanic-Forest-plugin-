@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Shamanic Forest & Earth
  * Description: Reversible Forest & Earth design system and homepage for Shamanic Reiki Healing Ireland. Designed for the NativeChurch theme. 3.3: top bar, service strip, dated events, review slider, inline newsletter; 3.3.1: consistent styling on every page, booking banner, shamanic artwork.
- * Version: 3.4.11
+ * Version: 3.4.12
  * Author: SmartSite
  * License: GPL-2.0-or-later
  * Text Domain: shamanic-forest-earth
@@ -10,7 +10,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) { exit; }
 
-define( 'SFE33_VERSION', '3.4.11' );
+define( 'SFE33_VERSION', '3.4.12' );
 define( 'SFE33_FORM_VER', 3 );
 /* Artwork generated for the site and stored in its Media Library (IDs). */
 define( 'SFE33_IMG_HERO', 20986 );
@@ -44,6 +44,7 @@ function sfe33_defaults() {
         'sfe34_events_auto'      => 1,
         'sfe34_event_book'       => 1,
         'sfe34_og_fallback'      => 1,
+        'sfe34_credit'           => 1,
     );
 }
 
@@ -458,6 +459,7 @@ add_action( 'admin_init', function() {
     register_setting( 'sfe_settings', 'sfe34_events_auto', $bool );
     register_setting( 'sfe_settings', 'sfe34_event_book', $bool );
     register_setting( 'sfe_settings', 'sfe34_og_fallback', $bool );
+    register_setting( 'sfe_settings', 'sfe34_credit', $bool );
     register_setting( 'sfe_settings', 'sfe32_newsletter_url', $url );
     register_setting( 'sfe_settings', 'sfe33_phone', $text );
     register_setting( 'sfe_settings', 'sfe33_email', array( 'type' => 'string', 'sanitize_callback' => 'sanitize_email' ) );
@@ -499,6 +501,7 @@ function sfe33_settings_page() {
         <?php $check( 'sfe34_events_auto', 'Events page: show the Forest & Earth events list automatically (replaces the theme’s old calendar list)' ); ?>
         <?php $check( 'sfe34_event_book', 'Event pages: show the “Book your place” box (above and below the description)' ); ?>
         <?php $check( 'sfe34_og_fallback', 'Social sharing: use Forest & Earth artwork as the Facebook / WhatsApp preview image when a page has no featured image' ); ?>
+        <?php $check( 'sfe34_credit', 'Footer: show “Website designed by SmartSite” (links to smartsite.ie)' ); ?>
         <?php $check( 'sfe33_cta_enabled', 'Show the “Book a Healing Session” banner at the end of pages and posts' ); ?>
 
         <h2>Contact &amp; social</h2>
@@ -626,6 +629,9 @@ function sfe33_footer_html() {
       </div>
       <div class="sfe-footer__bottom">
         <p>&copy; <?php echo esc_html( current_time( 'Y' ) ); ?> <?php echo esc_html( get_bloginfo( 'name' ) ); ?>. <?php esc_html_e( 'All rights reserved.', 'shamanic-forest-earth' ); ?></p>
+        <?php if ( sfe33_opt( 'sfe34_credit' ) ) : ?>
+          <p class="sfe-footer__credit"><?php esc_html_e( 'Website designed by', 'shamanic-forest-earth' ); ?> <a href="https://smartsite.ie/" target="_blank" rel="noopener">SmartSite</a></p>
+        <?php endif; ?>
         <p>
           <?php if ( get_page_by_path( 'privacy-policy' ) ) : ?><a href="<?php echo esc_url( sfe33_page_url( 'privacy-policy' ) ); ?>"><?php esc_html_e( 'Privacy Policy', 'shamanic-forest-earth' ); ?></a> · <?php endif; ?>
           <a href="#top" class="sfe-footer__top" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;"><?php esc_html_e( 'Back to top', 'shamanic-forest-earth' ); ?> &uarr;</a>

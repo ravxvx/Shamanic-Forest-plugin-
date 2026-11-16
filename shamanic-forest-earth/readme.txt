@@ -2,10 +2,13 @@
 Contributors: smartsite
 Requires at least: 6.0
 Requires PHP: 7.4
-Stable tag: 3.4.11
+Stable tag: 3.4.12
 License: GPLv2 or later
 
 Forest & Earth homepage and visual design for the NativeChurch theme.
+
+== 3.4.12 ==
+* Footer: "Website designed by SmartSite" credit linking to smartsite.ie (switch in settings).
 
 == 3.4.11 ==
 * Fix: the pre-filled booking message showed HTML codes such as &#8211; instead of the dash in event titles.
